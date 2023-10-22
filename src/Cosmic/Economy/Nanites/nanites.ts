@@ -30,3 +30,11 @@ export async function purchase(id:string, amount:number) {
 		return undefined;
 	}
 }
+
+export async function donate(id:string, amount:number) {
+	if (amount < 0) {
+		return;
+	}
+
+	await (db.atomic().sum(['nanites', id], BigInt(amount)).commit());
+}

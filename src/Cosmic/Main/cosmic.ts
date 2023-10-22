@@ -1,5 +1,6 @@
 import { complete } from '../AI/llama2.ts';
 import { db } from '../DB/db.ts';
+import { donate } from '../Economy/Nanites/nanites.ts';
 import { Message, Room } from '../IO/io.ts';
 import { ParseContext, lex, parse } from '../Parser/parser.ts';
 import { color_run, latestUserMessages, saveUserData, usernameToUserID } from './Commands/color.ts';
@@ -107,6 +108,19 @@ export function cosmic(room: Room) {
 		if (message.text.includes('💀')) {
 			room.send('skull emoji');
 		}
+
+		// check daily streak
+		const date = new Date().getDay() + (new Date().getMonth() * 100) + (new Date().getFullYear() * 10000);
+
+		// check if different day since last message
+		const lastMessageFromUserDay = (await db.get(['lastMessageFromUserDay'])).value as number || 0;
+
+		if (date != lastMessageFromUserDay) {
+			await donate(getUserID(message), 100);
+			room.send('Congrats, you got 100 nanites for chatting today!');
+			await db.set(['lastMessageFromUserDay'], date);
+		}
+
 		if (!isNaN(Number(message.text))) {
 			// get current count
 			const count = (await db.get(['count'])).value as number || 0;

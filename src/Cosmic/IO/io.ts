@@ -1,5 +1,6 @@
 import io from 'npm:socket.io-client';
 import { unhtml } from '../Main/Utilities/user.ts';
+import Prompt from 'https://deno.land/x/prompt@v1.0.0/mod.ts';
 
 export type Room = {
 	name: string;
@@ -103,4 +104,55 @@ function setupIO(connection:Socket, messageHandlers:((message: Message) => void)
 	connection.on('auth-complete', function (userId: string) {
 		callback(userId);
 	});
+}
+
+export function local(): Room {
+	let messageHandlers: ((message: Message) => void)[] = [];
+
+	(async () => {
+		while (true) {
+			const text = await Prompt.prompts([{
+				type: "text",
+				name: "text",
+				message: "What do you want to say?"
+			}]);
+	
+			for (const handler of messageHandlers) {
+				handler({
+					date: new Date(),
+					username: 'Jessie',
+					text: text.text,
+				});
+			}
+		}
+	})();
+
+	return ({
+		addEventListener(name, callback) {
+			if (name == 'message') {
+				messageHandlers.push(callback);
+			}
+		},
+		send(text) {
+			console.log(text);
+
+			for (const handler of messageHandlers) {
+				handler({
+					date: new Date(),
+					username: 'Cosmic',
+					text,
+				});
+			}
+
+			return Promise.resolve();
+		},
+		features: [Feature.Colors, Feature.UserID],
+		getCosmicId() {
+			return 'Cosmic';
+		},
+		name: 'Cosmic',
+		close() {
+			return Promise.resolve();
+		}
+	})
 }
