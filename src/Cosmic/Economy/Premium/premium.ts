@@ -1,5 +1,5 @@
-import { db } from "../../DB/db.ts";
-import { purchase } from "../Nanites/nanites.ts";
+import { db } from '../../DB/db.ts';
+import { purchase } from '../Nanites/nanites.ts';
 
 /**
  * Retrieves the last premium timestamp for the specified ID.
@@ -7,8 +7,8 @@ import { purchase } from "../Nanites/nanites.ts";
  * @param {string} id - The ID of the record to retrieve the last premium timestamp for.
  * @return {number} The last premium timestamp for the specified ID. Returns 0 if no premium timestamp is found.
  */
-export async function getLastPremiumMs(id:string) {
-	return (await db.get(['premiumMs', id])).value as number || 0;
+export async function getLastPremiumMs(id: string) {
+	return ((await db.get(['premiumMs', id])).value as number) || 0;
 }
 
 /**
@@ -17,11 +17,11 @@ export async function getLastPremiumMs(id:string) {
  * @param {string} id - The ID of the user.
  * @return {number} The remaining premium time in milliseconds.
  */
-export async function getPremiumTime(id:string) {
-	let time = (await db.get(['premium', id])).value as number || 0;
-	const millisSinceRenew = Date.now() - await getLastPremiumMs(id);
+export async function getPremiumTime(id: string) {
+	let time = ((await db.get(['premium', id])).value as number) || 0;
+	const millisSinceRenew = Date.now() - (await getLastPremiumMs(id));
 	const monthsSinceRenew = millisSinceRenew / (1000 * 60 * 60 * 24 * 30);
-	
+
 	time -= monthsSinceRenew;
 
 	if (time < 0) {
@@ -38,7 +38,7 @@ export async function getPremiumTime(id:string) {
  * @param {number} targetTime - The target time for the premium subscription.
  * @return {object} - An object with a method `buy()` that renews the premium time, sets the new time, and makes the purchase.
  */
-export async function buyPremium(id:string, targetTime:number) {
+export async function buyPremium(id: string, targetTime: number) {
 	const monthsCurrent = await getPremiumTime(id);
 	const monthsPurchasing = targetTime - monthsCurrent;
 
@@ -60,12 +60,13 @@ export async function buyPremium(id:string, targetTime:number) {
 			await db.set(['premiumMs', id], Date.now());
 
 			// set new time
-			await db.set(['premium', id], monthsPurchasing);
+			await db.set(['premium', id], targetTime);
 
 			// buy
 			await purchased.buy();
-		}
-	}
+		},
+		nanites,
+	};
 }
 
 /**
@@ -74,7 +75,7 @@ export async function buyPremium(id:string, targetTime:number) {
  * @param {string} id - The ID of the user.
  * @return {Object} - An object containing the premium time and tier.
  */
-export async function getPremium(id:string) {
+export async function getPremium(id: string) {
 	const time = await getPremiumTime(id);
 	let tier = PremiumTier.None;
 
@@ -84,11 +85,34 @@ export async function getPremium(id:string) {
 
 	return {
 		time,
-		tier
-	}
+		tier,
+	};
 }
 
 export enum PremiumTier {
 	None = 0,
 	Turbo = 1,
 }
+
+export enum PremiumFeature {
+	BombSquadCustomTeam,
+}
+
+export const premium_tier_data: Record<PremiumTier, Permissions> = {
+	[PremiumTier.None]: {
+		name: 'Free',
+		dailyNanites: 100,
+		features: [],
+	},
+	[PremiumTier.Turbo]: {
+		name: 'Turbo',
+		dailyNanites: 250,
+		features: [PremiumFeature.BombSquadCustomTeam],
+	},
+};
+
+export type Permissions = {
+	name: string;
+	dailyNanites: number;
+	features: PremiumFeature[];
+};

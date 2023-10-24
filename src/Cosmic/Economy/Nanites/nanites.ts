@@ -7,7 +7,13 @@ import { db } from "../../DB/db.ts";
  * @return {Promise<number>} The nanite points for the given ID. If no nanite points are found, returns 0.
  */
 export async function getNanitePoints(id:string):Promise<number> {
-	return (await db.get(['nanites', id])).value as number || 0;
+	const points = (await db.get<number>(['nanites', id])).value;
+	
+	if (!points) {
+		return 0;
+	}
+
+	return Math.floor(Number(points));
 }
 
 /**
@@ -20,10 +26,15 @@ export async function getNanitePoints(id:string):Promise<number> {
  * @return {object | undefined} - An object with a `buy` method to execute the purchase, or undefined if the user does not have enough Nanite points.
  */
 export async function purchase(id:string, amount:number) {
+	if (amount < 0) {
+		return;
+	}
 	if (await getNanitePoints(id) >= amount) {
 		return {
 			async buy() {
-				await (db.atomic().sum(['nanites', id], BigInt(-amount)).commit());
+				const previousMoney = await getNanitePoints(id);
+
+				await db.set(['nanites', id], previousMoney - Math.ceil(amount));
 			}
 		}
 	} else {
@@ -36,5 +47,7 @@ export async function donate(id:string, amount:number) {
 		return;
 	}
 
-	await (db.atomic().sum(['nanites', id], BigInt(amount)).commit());
+	const previousMoney = await getNanitePoints(id);
+
+	await db.set(['nanites', id], previousMoney + Math.ceil(amount));
 }

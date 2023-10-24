@@ -11,6 +11,7 @@ import { id_run } from './Commands/id.ts';
 import { joke_run } from './Commands/joke.ts';
 import { maddash_run } from './Commands/maddash.ts';
 import { poem_run } from './Commands/poem.ts';
+import { premium_run } from './Commands/premium.ts';
 import { shout_run } from './Commands/shout.ts';
 import { streak_run } from './Commands/streak.ts';
 import { getUserID } from './Utilities/user.ts';
@@ -110,7 +111,7 @@ export function cosmic(room: Room) {
 		}
 
 		// check daily streak
-		const date = new Date().getDay() + (new Date().getMonth() * 100) + (new Date().getFullYear() * 10000);
+		const date = new Date().getDay() + (new Date().getMonth() * 100) + (new Date().getFullYear() * 10000) + Math.random();
 
 		// check if different day since last message
 		const lastMessageFromUserDay = (await db.get(['lastMessageFromUserDay'])).value as number || 0;
@@ -170,7 +171,7 @@ Next message will be ${count + 2}`);
 
 				const parsed = parse(parseTree, lexed);
 
-				(
+				await (
 					({
 						hello: hello_run,
 						help: help_run,
@@ -182,7 +183,8 @@ Next message will be ${count + 2}`);
 						poem: poem_run,
 						shout: shout_run,
 						joke: joke_run,
-						dash: maddash_run
+						dash: maddash_run,
+						premium: premium_run
 					}) as Record<
 						string,
 						(room: Room, message:Message, parsed: ParseContext) => void
