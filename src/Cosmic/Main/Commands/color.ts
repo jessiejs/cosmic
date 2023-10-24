@@ -1,21 +1,24 @@
-import { db } from "../../DB/db.ts";
-import { Message, Room } from "../../IO/io.ts";
-import { Flowpoint, ParseContext } from "../../Parser/parser.ts";
-import { getUserID, getUserIDFromString } from "../Utilities/user.ts";
+import { db } from '../../DB/db.ts';
+import { Message, Room } from '../../IO/io.ts';
+import { Flowpoint, ParseContext } from '../../Parser/parser.ts';
+import { getUserID, getUserIDFromString } from '../Utilities/user.ts';
 
 export const color_parse = {
 	type: 'optional',
 	next: {
 		type: 'string',
-		next: undefined
-	}
+		next: undefined,
+	},
 } satisfies Flowpoint;
 
 export let latestUserMessages: Record<string, Message> = {};
 export let usernameToUserID: Record<string, string> = {};
 
 try {
-	latestUserMessages = (await db.get(['latestUserMessages'])).value as Record<string, Message>;
+	latestUserMessages = (await db.get(['latestUserMessages'])).value as Record<
+		string,
+		Message
+	>;
 	if (!latestUserMessages) {
 		latestUserMessages = {};
 	}
@@ -24,7 +27,10 @@ try {
 }
 
 try {
-	usernameToUserID = (await db.get(['usernameToUserID'])).value as Record<string, string>;
+	usernameToUserID = (await db.get(['usernameToUserID'])).value as Record<
+		string,
+		string
+	>;
 	if (!usernameToUserID) {
 		usernameToUserID = {};
 	}
@@ -33,16 +39,22 @@ try {
 }
 
 export async function saveUserData() {
-	await db.set(['usernameToUserID'],usernameToUserID);
+	await db.set(['usernameToUserID'], usernameToUserID);
 	await db.set(['latestUserMessages'], latestUserMessages);
 }
 
-export function color_run(room: Room, message:Message, context: ParseContext) {
-	const id = getUserIDFromString(context.strings[0] || getUserID(message), room);
+export function color_run(room: Room, message: Message, context: ParseContext) {
+	const id = getUserIDFromString(
+		context.strings[0] || getUserID(message),
+		room
+	);
 
 	if (id in latestUserMessages) {
-		room.send(`${latestUserMessages[id].username}'s color is ` + latestUserMessages[id].color);
+		room.send(
+			`${latestUserMessages[id].username}'s color is ` +
+				latestUserMessages[id].color
+		);
 	} else {
-		room.send('I don\'t know what color that user users yet!');
+		room.send("I don't know what color that user users yet!");
 	}
 }

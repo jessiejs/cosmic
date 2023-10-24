@@ -38,11 +38,11 @@ export function w96(user: string): Room {
 
 	let cosmicId = '';
 
-	setupIO(connection, messageHandlers, user, (id) => {
+	setupIO(connection, messageHandlers, user, id => {
 		cosmicId = id;
 	});
 
-	return ({
+	return {
 		name: 'Windows 96',
 		addEventListener(name, callback) {
 			if (name == 'message') {
@@ -50,7 +50,7 @@ export function w96(user: string): Room {
 			}
 		},
 		send(text) {
-			connection.emit('message', { type:'text', content: text });
+			connection.emit('message', { type: 'text', content: text });
 			return Promise.resolve();
 		},
 		close() {
@@ -61,13 +61,18 @@ export function w96(user: string): Room {
 		getCosmicId() {
 			return cosmicId;
 		},
-		prefix: 'msgroom'
-	});
+		prefix: 'msgroom',
+	};
 }
 
 type Socket = ReturnType<typeof io>;
 
-function setupIO(connection:Socket, messageHandlers:((message: Message) => void)[], user:string, callback: (id: string) => void) {
+function setupIO(
+	connection: Socket,
+	messageHandlers: ((message: Message) => void)[],
+	user: string,
+	callback: (id: string) => void
+) {
 	connection.on('connect', () => {
 		console.log('connected');
 	});
@@ -79,7 +84,7 @@ function setupIO(connection:Socket, messageHandlers:((message: Message) => void)
 			content,
 			id,
 			user,
-			date
+			date,
 		}: {
 			content: string;
 			user: string;
@@ -93,7 +98,7 @@ function setupIO(connection:Socket, messageHandlers:((message: Message) => void)
 					text: unhtml(content),
 					userID: 'msgroom:' + id,
 					username: user,
-					date: new Date(date)
+					date: new Date(date),
 				});
 			}
 		}
@@ -105,7 +110,7 @@ function setupIO(connection:Socket, messageHandlers:((message: Message) => void)
 		const newConn = io('wss://devel.windows96.net:4096');
 
 		setupIO(newConn, messageHandlers, user, callback);
-	})
+	});
 
 	connection.on('auth-complete', function (userId: string) {
 		callback(userId);
@@ -117,24 +122,26 @@ export function local(): Room {
 
 	(async () => {
 		while (true) {
-			const text = await Prompt.prompts([{
-				type: "text",
-				name: "text",
-				message: "What do you want to say?"
-			}]);
-	
+			const text = await Prompt.prompts([
+				{
+					type: 'text',
+					name: 'text',
+					message: 'What do you want to say?',
+				},
+			]);
+
 			for (const handler of messageHandlers) {
 				handler({
 					date: new Date(),
 					username: 'Jessie',
 					text: text.text,
-					userID: 'local:jessie'
+					userID: 'local:jessie',
 				});
 			}
 		}
 	})();
 
-	return ({
+	return {
 		addEventListener(name, callback) {
 			if (name == 'message') {
 				messageHandlers.push(callback);
@@ -148,7 +155,7 @@ export function local(): Room {
 					date: new Date(),
 					username: 'Cosmic',
 					text,
-					userID: 'local:cosmic'
+					userID: 'local:cosmic',
 				});
 			}
 
@@ -162,6 +169,6 @@ export function local(): Room {
 		close() {
 			return Promise.resolve();
 		},
-		prefix: 'local'
-	})
+		prefix: 'local',
+	};
 }

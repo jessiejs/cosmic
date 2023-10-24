@@ -15,7 +15,10 @@ export const id_parse = {
 } as Flowpoint;
 
 export function id_run(room: Room, message: Message, context: ParseContext) {
-	const id = getUserIDFromString(context.strings[0] || getUserID(message), room);
+	const id = getUserIDFromString(
+		context.strings[0] || getUserID(message),
+		room
+	);
 	const info = getUserData(id);
 
 	if (info) {

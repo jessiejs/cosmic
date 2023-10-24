@@ -107,7 +107,7 @@ export const premium_tier_data: Record<PremiumTier, Permissions> = {
 		features: [],
 		emoji: '🆓',
 		isHidden: true,
-		id: 'free'
+		id: 'free',
 	},
 	[PremiumTier.Turbo]: {
 		name: 'Turbo',
@@ -119,7 +119,7 @@ export const premium_tier_data: Record<PremiumTier, Permissions> = {
 			PremiumFeature.MadDashMods,
 		],
 		emoji: '🔥',
-		id: 'turbo'
+		id: 'turbo',
 	},
 };
 

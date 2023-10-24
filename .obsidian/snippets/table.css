@@ -1,18 +1,19 @@
 @import 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@100;200;300;400;500;600;700;800;900&display=swap';
 @import 'https://api.fontshare.com/v2/css?f[]=satoshi@1,900,700,500,301,701,300,501,401,901,400,2&display=swap';
 
-.callout[data-callout="important"] {
+.callout[data-callout='important'] {
 	--callout-color: var(--color-purple-rgb);
 }
 * {
 	/*font-family: 'Satoshi' !important;*/
 	border-width: 0.5px !important;
 }
-td, th {
+td,
+th {
 	padding: 10px 15px !important;
 }
 th {
-	background-color: rgba(255,255,255,0.02) !important;
+	background-color: rgba(255, 255, 255, 0.02) !important;
 }
 table {
 	width: 100%;
@@ -23,7 +24,14 @@ table {
 .inline-title {
 	line-height: 100%;
 }
-.inline-title, h1, h2, h3, h4, h5, h6, .cm-header {
+.inline-title,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.cm-header {
 	font-size: 2.25em;
 	font-weight: 600;
 	font-family: 'Inter Tight', Inter;

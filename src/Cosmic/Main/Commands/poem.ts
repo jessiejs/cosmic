@@ -4,7 +4,7 @@ import { Flowpoint, ParseContext } from '../../Parser/parser.ts';
 
 export const poem_parse = {
 	type: 'string',
-	next: undefined
+	next: undefined,
 } satisfies Flowpoint;
 
 export function poem_run(room: Room, _message: Message, context: ParseContext) {
@@ -13,7 +13,7 @@ export function poem_run(room: Room, _message: Message, context: ParseContext) {
 		return;
 	}
 
-	if (context.strings[0].trim().toLowerCase() == "fake jessie") {
+	if (context.strings[0].trim().toLowerCase() == 'fake jessie') {
 		room.send(`**f** ucking
 **a** sshole
 **k** iddie
@@ -23,13 +23,22 @@ export function poem_run(room: Room, _message: Message, context: ParseContext) {
 		return;
 	}
 
-	const output:string[] = [];
+	const output: string[] = [];
 
 	for (const char of context.strings[0]) {
-		const wordsStartingWithChar = (words as string[]).filter(word => word.startsWith(char.toLowerCase()));
+		const wordsStartingWithChar = (words as string[]).filter(word =>
+			word.startsWith(char.toLowerCase())
+		);
 
 		if (wordsStartingWithChar.length > 0) {
-			output.push("**" + char + "** " + wordsStartingWithChar[Math.floor(Math.random() * wordsStartingWithChar.length)].slice(1));
+			output.push(
+				'**' +
+					char +
+					'** ' +
+					wordsStartingWithChar[
+						Math.floor(Math.random() * wordsStartingWithChar.length)
+					].slice(1)
+			);
 		} else {
 			output.push(char);
 		}

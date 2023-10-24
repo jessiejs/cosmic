@@ -1,10 +1,14 @@
-import { db } from "../../DB/db.ts";
-import { Message, Room } from "../../IO/io.ts";
-import { ParseContext } from "../../Parser/parser.ts";
+import { db } from '../../DB/db.ts';
+import { Message, Room } from '../../IO/io.ts';
+import { ParseContext } from '../../Parser/parser.ts';
 
 export const streak_parse = undefined;
 
-export async function streak_run(room: Room, _message: Message, _context: ParseContext) {
+export async function streak_run(
+	room: Room,
+	_message: Message,
+	_context: ParseContext
+) {
 	// only allow once every 5 minutes
 	let lastRun = (await db.get(['lastStreakRun'])).value as number;
 	if (!lastRun) {

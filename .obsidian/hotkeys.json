@@ -1,8 +1,8 @@
 {
-  "command-palette:open": [
-    {
-      "modifiers": [],
-      "key": "F12"
-    }
-  ]
+	"command-palette:open": [
+		{
+			"modifiers": [],
+			"key": "F12"
+		}
+	]
 }

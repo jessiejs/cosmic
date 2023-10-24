@@ -16,7 +16,10 @@ export const facts_parse = {
 } as Flowpoint;
 
 export function facts_run(room: Room, message: Message, context: ParseContext) {
-	const id = getUserIDFromString(context.strings[0] || getUserID(message), room);
+	const id = getUserIDFromString(
+		context.strings[0] || getUserID(message),
+		room
+	);
 	const info = getUserData(id);
 
 	if (info) {
@@ -24,12 +27,15 @@ export function facts_run(room: Room, message: Message, context: ParseContext) {
 
 		output += `Name: ${info.username}\n`;
 		output += `ID: ${getUserID(info)}\n`;
-		
+
 		let longestWord = '';
 
 		if (info.userID) {
 			for (const word of words) {
-				if (info.userID.toLowerCase().includes(word.toLowerCase()) && word.length > longestWord.length) {
+				if (
+					info.userID.toLowerCase().includes(word.toLowerCase()) &&
+					word.length > longestWord.length
+				) {
 					longestWord = word;
 				}
 			}
@@ -43,6 +49,6 @@ export function facts_run(room: Room, message: Message, context: ParseContext) {
 
 		room.send(output);
 	} else {
-		room.send('I don\'t know that user\'s info yet!');
+		room.send("I don't know that user's info yet!");
 	}
 }

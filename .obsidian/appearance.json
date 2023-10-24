@@ -1,10 +1,8 @@
 {
-  "accentColor": "#4400ff",
-  "interfaceFontFamily": "Inter",
-  "textFontFamily": "Inter",
-  "monospaceFontFamily": "JetBrainsMono NFM",
-  "cssTheme": "Things",
-  "enabledCssSnippets": [
-    "table"
-  ]
+	"accentColor": "#4400ff",
+	"interfaceFontFamily": "Inter",
+	"textFontFamily": "Inter",
+	"monospaceFontFamily": "JetBrainsMono NFM",
+	"cssTheme": "Things",
+	"enabledCssSnippets": ["table"]
 }

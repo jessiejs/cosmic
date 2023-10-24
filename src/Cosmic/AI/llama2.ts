@@ -2,17 +2,22 @@ import { Room } from '../IO/io.ts';
 import { ChatContext } from './chat.ts';
 
 const fast = 'd24902e3fa9b698cc208b5e63136c4e26e828659a9f09827ca6ec5bb83014381';
-const normal = '2796ee9483c3fd7aa2e171d38f4ca12251a30609463dcfd4cd76703f22e96cdf';
+const normal =
+	'2796ee9483c3fd7aa2e171d38f4ca12251a30609463dcfd4cd76703f22e96cdf';
 
-function filterMessage(msg:string) {
+function filterMessage(msg: string) {
 	if (msg.includes('[/ai]')) {
-		return msg.slice(0, msg.indexOf('[/ai]')).split('Cosmic:').join('').trim();
+		return msg
+			.slice(0, msg.indexOf('[/ai]'))
+			.split('Cosmic:')
+			.join('')
+			.trim();
 	} else {
 		return msg.split('Cosmic:').join('').trim();
 	}
 }
 
-export async function complete(chat: ChatContext, say:(s:string)=>void) {
+export async function complete(chat: ChatContext, say: (s: string) => void) {
 	console.log('chatting');
 	console.log(chat);
 
@@ -32,14 +37,16 @@ export async function complete(chat: ChatContext, say:(s:string)=>void) {
 		referrer: 'https://www.llama2.ai/',
 		body: JSON.stringify({
 			//prompt: "[INST] test [/INST]\n Hello! I'm here to help you with any questions or tasks you may have. Is there something specific you need assistance with, or is there anything you'd like to chat about?\n[INST] test [/INST]\n",
-			prompt: chat.messages.map(m => {
-				if (m.user == "ai") {
-					return `${m.content}\n`;
-				} else {
-					return `[INST] ${m.name}:
+			prompt: chat.messages
+				.map(m => {
+					if (m.user == 'ai') {
+						return `${m.content}\n`;
+					} else {
+						return `[INST] ${m.name}:
 ${m.content} [/INST]\n`;
-				}
-			}).join('\n'),
+					}
+				})
+				.join('\n'),
 			//prompt: chat.messages.map(m => `[${m.name || m.user}]${m.content}[/${m.name || m.user}]`).join('\n') + '\n[ai]',
 			version: normal,
 			systemPrompt: chat.systemMessage,
@@ -86,7 +93,7 @@ ${m.content} [/INST]\n`;
 			if (char == '.' || char == '?' || char == '!') {
 				if (!lastCharPunctuation) {
 					say(filterMessage(toSend));
-					await new Promise((resolve) => setTimeout(resolve, 200));
+					await new Promise(resolve => setTimeout(resolve, 200));
 					toSend = '';
 				}
 				lastCharPunctuation = true;
