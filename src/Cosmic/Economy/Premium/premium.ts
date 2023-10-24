@@ -96,23 +96,44 @@ export enum PremiumTier {
 
 export enum PremiumFeature {
 	BombSquadCustomTeam,
+	MadDashMods,
 }
 
 export const premium_tier_data: Record<PremiumTier, Permissions> = {
 	[PremiumTier.None]: {
 		name: 'Free',
+		description: "You can't see this!",
 		dailyNanites: 100,
 		features: [],
+		emoji: '🆓',
+		isHidden: true,
+		id: 'free'
 	},
 	[PremiumTier.Turbo]: {
 		name: 'Turbo',
+		description:
+			'Turbo is the entry-level tier that gives you powerful features.',
 		dailyNanites: 250,
-		features: [PremiumFeature.BombSquadCustomTeam],
+		features: [
+			PremiumFeature.BombSquadCustomTeam,
+			PremiumFeature.MadDashMods,
+		],
+		emoji: '🔥',
+		id: 'turbo'
 	},
+};
+
+export const feature_names: Record<PremiumFeature, [string, string]> = {
+	[PremiumFeature.BombSquadCustomTeam]: ['💣', 'Bomb Squad Team Picker'],
+	[PremiumFeature.MadDashMods]: ['🔥', 'Mad Dash Mods'],
 };
 
 export type Permissions = {
 	name: string;
+	description: string;
+	isHidden?: boolean;
 	dailyNanites: number;
 	features: PremiumFeature[];
+	emoji: string;
+	id: string;
 };

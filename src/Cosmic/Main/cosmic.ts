@@ -1,4 +1,3 @@
-import { complete } from '../AI/llama2.ts';
 import { db } from '../DB/db.ts';
 import { donate } from '../Economy/Nanites/nanites.ts';
 import { Message, Room } from '../IO/io.ts';
@@ -111,7 +110,7 @@ export function cosmic(room: Room) {
 		}
 
 		// check daily streak
-		const date = new Date().getDay() + (new Date().getMonth() * 100) + (new Date().getFullYear() * 10000) + Math.random();
+		const date = new Date().getDay() + (new Date().getMonth() * 100) + (new Date().getFullYear() * 10000);
 
 		// check if different day since last message
 		const lastMessageFromUserDay = (await db.get(['lastMessageFromUserDay'])).value as number || 0;

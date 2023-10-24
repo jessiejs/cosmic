@@ -15,7 +15,7 @@ export let latestUserMessages: Record<string, Message> = {};
 export let usernameToUserID: Record<string, string> = {};
 
 try {
-	latestUserMessages = (await db.get(['latestUserMessages'])).value as any;
+	latestUserMessages = (await db.get(['latestUserMessages'])).value as Record<string, Message>;
 	if (!latestUserMessages) {
 		latestUserMessages = {};
 	}
@@ -24,7 +24,7 @@ try {
 }
 
 try {
-	usernameToUserID = (await db.get(['usernameToUserID'])).value as any;
+	usernameToUserID = (await db.get(['usernameToUserID'])).value as Record<string, string>;
 	if (!usernameToUserID) {
 		usernameToUserID = {};
 	}
@@ -38,7 +38,7 @@ export async function saveUserData() {
 }
 
 export function color_run(room: Room, message:Message, context: ParseContext) {
-	const id = getUserIDFromString(context.strings[0] || getUserID(message));
+	const id = getUserIDFromString(context.strings[0] || getUserID(message), room);
 
 	if (id in latestUserMessages) {
 		room.send(`${latestUserMessages[id].username}'s color is ` + latestUserMessages[id].color);

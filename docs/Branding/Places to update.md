@@ -4,4 +4,5 @@ You need to update several places to update the branding.
 * Discord bot
 * GitHub
 # Branding
+
 ![[Cosmic.png]]![[Cosmic Icon.png]]![[Turbo.png]]![[Turbo Icon.png]]

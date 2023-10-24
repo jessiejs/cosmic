@@ -15,6 +15,8 @@ export type Room = {
 	close(): Promise<void>;
 
 	getCosmicId(): string;
+
+	prefix: string;
 };
 
 export enum Feature {
@@ -41,6 +43,7 @@ export function w96(user: string): Room {
 	});
 
 	return ({
+		name: 'Windows 96',
 		addEventListener(name, callback) {
 			if (name == 'message') {
 				messageHandlers.push(callback);
@@ -48,15 +51,18 @@ export function w96(user: string): Room {
 		},
 		send(text) {
 			connection.emit('message', { type:'text', content: text });
+			return Promise.resolve();
 		},
 		close() {
 			connection.close();
+			return Promise.resolve();
 		},
 		features: [Feature.Colors, Feature.UserID],
 		getCosmicId() {
 			return cosmicId;
-		}
-	}) as Room;
+		},
+		prefix: 'msgroom'
+	});
 }
 
 type Socket = ReturnType<typeof io>;
@@ -85,7 +91,7 @@ function setupIO(connection:Socket, messageHandlers:((message: Message) => void)
 				handler({
 					color,
 					text: unhtml(content),
-					userID: id,
+					userID: 'msgroom:' + id,
 					username: user,
 					date: new Date(date)
 				});
@@ -107,7 +113,7 @@ function setupIO(connection:Socket, messageHandlers:((message: Message) => void)
 }
 
 export function local(): Room {
-	let messageHandlers: ((message: Message) => void)[] = [];
+	const messageHandlers: ((message: Message) => void)[] = [];
 
 	(async () => {
 		while (true) {
@@ -122,6 +128,7 @@ export function local(): Room {
 					date: new Date(),
 					username: 'Jessie',
 					text: text.text,
+					userID: 'local:jessie'
 				});
 			}
 		}
@@ -141,6 +148,7 @@ export function local(): Room {
 					date: new Date(),
 					username: 'Cosmic',
 					text,
+					userID: 'local:cosmic'
 				});
 			}
 
@@ -148,11 +156,12 @@ export function local(): Room {
 		},
 		features: [Feature.Colors, Feature.UserID],
 		getCosmicId() {
-			return 'Cosmic';
+			return 'local:cosmic';
 		},
 		name: 'Cosmic',
 		close() {
 			return Promise.resolve();
-		}
+		},
+		prefix: 'local'
 	})
 }

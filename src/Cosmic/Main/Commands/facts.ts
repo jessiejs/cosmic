@@ -16,7 +16,7 @@ export const facts_parse = {
 } as Flowpoint;
 
 export function facts_run(room: Room, message: Message, context: ParseContext) {
-	const id = getUserIDFromString(context.strings[0] || getUserID(message));
+	const id = getUserIDFromString(context.strings[0] || getUserID(message), room);
 	const info = getUserData(id);
 
 	if (info) {
